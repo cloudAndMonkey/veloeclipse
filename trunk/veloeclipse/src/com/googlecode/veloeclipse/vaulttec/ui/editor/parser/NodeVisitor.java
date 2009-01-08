@@ -2,7 +2,7 @@ package com.googlecode.veloeclipse.vaulttec.ui.editor.parser;
 
 import java.util.Stack;
 
-import org.apache.velocity.runtime.parser.ParserVisitor;
+import org.apache.velocity.runtime.parser.node.ParserVisitor;
 import org.apache.velocity.runtime.parser.node.ASTAddNode;
 import org.apache.velocity.runtime.parser.node.ASTAndNode;
 import org.apache.velocity.runtime.parser.node.ASTAssignment;

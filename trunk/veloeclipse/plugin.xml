@@ -8,11 +8,6 @@
    class="com.googlecode.veloeclipse.vaulttec.ui.VelocityPlugin">
 
    <runtime>
-      <library name="velocity-dep-1.5.jar">
-         <export
-               name="*">
-         </export>
-      </library>
    <library name="htmlparser-1.5.jar">
       <export name="*"/>
    </library>
@@ -21,6 +16,21 @@
    </library>
    <library name="velocityui.jar">
       <export name="*"/>
+   </library>
+   <library name="commons-collections-3.2.1.jar">
+      <export
+            name="*">
+      </export>
+   </library>
+   <library name="commons-lang-2.4.jar">
+      <export
+            name="*">
+      </export>
+   </library>
+   <library name="velocity-1.6.jar">
+      <export
+            name="*">
+      </export>
    </library>
       
    </runtime>
@@ -38,7 +48,6 @@
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.equinox.p2.ui" version="1.0.1"/>
    </requires>
    <extension-point id="completionproviders" name="Completion Providers" schema="schema/completionproviders.exsd"/>
  <extension

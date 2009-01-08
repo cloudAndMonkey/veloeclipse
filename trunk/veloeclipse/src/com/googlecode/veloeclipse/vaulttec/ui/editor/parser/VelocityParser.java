@@ -95,7 +95,7 @@ public class VelocityParser extends RuntimeInstance
      * @throws Exception
      *             DOCUMENT ME!
      */
-    public synchronized void init() throws Exception
+    public synchronized void init()
     {
         if (!fIsInitialized)
         {
@@ -127,7 +127,7 @@ public class VelocityParser extends RuntimeInstance
      * Runtime. The directives to be initialized are listed in the
      * RUNTIME_DEFAULT_DIRECTIVES properties file.
      */
-    private void initializeDirectives() throws Exception
+    private void initializeDirectives()
     {
         /*
          * Initialize the runtime directive table. This will be used for
@@ -141,9 +141,16 @@ public class VelocityParser extends RuntimeInstance
          */
         ClassLoader classLoader = this.getClass().getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(DEFAULT_RUNTIME_DIRECTIVES);
-        if (inputStream == null) { throw new Exception("Error loading directive.properties! " + "Something is very wrong if these properties " + "aren't being located. Either your Velocity "
+        if (inputStream == null) { throw new RuntimeException("Error loading directive.properties! " + "Something is very wrong if these properties " + "aren't being located. Either your Velocity "
                 + "distribution is incomplete or your Velocity " + "jar file is corrupted!"); }
-        directiveProperties.load(inputStream);
+        try
+        {
+          directiveProperties.load(inputStream);
+        }
+        catch(Exception e)
+        {
+          throw new RuntimeException(e);
+        }
         /*
          * Grab all the values of the properties. These are all class names for
          * example:
