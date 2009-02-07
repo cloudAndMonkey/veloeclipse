@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -61,7 +62,18 @@ public class PatternMatchListener implements IPatternMatchListener
       Matcher matcher = filere.matcher(str);
       if (matcher.matches())
       {     
-        String filestr = base + matcher.group(1);
+        String filename = matcher.group(1);
+        String filestr = null;
+        if (!filename.startsWith("/") && !filename.startsWith("\\"))
+        {          
+          // Add a path seperator if the filename does not already have one at the beginning
+          filestr = base + "/" + matcher.group(1);
+        }
+        else
+        {
+          filestr = base + matcher.group(1);          
+        }
+        
         int linenum = Integer.parseInt(matcher.group(3));
         int colnum = Integer. parseInt(matcher.group(4));
         
@@ -132,7 +144,7 @@ public class PatternMatchListener implements IPatternMatchListener
         IDocumentProvider provider = teditor.getDocumentProvider();
         IDocument document = provider.getDocument(teditor.getEditorInput());
         int start = document.getLineOffset(linenum-1); 
-        teditor.selectAndReveal(start + colnum, 0);        
+        teditor.selectAndReveal(start + colnum, 0);                
       } 
       catch (PartInitException e)
       {
