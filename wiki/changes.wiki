@@ -1,5 +1,3 @@
-#Change log
-
 == Changes ==
 
 === 2009-2-17 Release 2.0.7  ===
