@@ -1,10 +1,7 @@
 package com.googlecode.veloeclipse.vaulttec.ui;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -33,23 +30,28 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-import com.googlecode.veloeclipse.dtd.parser.DTD;
-import com.googlecode.veloeclipse.dtd.parser.DTDParser;
 import com.googlecode.veloeclipse.editor.compare.CompareDialog;
 import com.googlecode.veloeclipse.preferences.GeneralPreferencePage;
 import com.googlecode.veloeclipse.vaulttec.ui.editor.VelocityEditorEnvironment;
-
+import com.wutka.dtd.DTD;
 
 /**
  * The main plugin class to be used in the desktop.
  */
 public class VelocityPlugin extends AbstractUIPlugin
 {
-
     private static final String   STRICT40        = "http://www.w3.org/TR/html4/strict.dtd";
     private static final String   LOOSE40         = "http://www.w3.org/TR/html4/loose.dtd";
     private static final String   STRICTX         = "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd";
-    private static final String[] dtds            = new String[] { STRICT40, LOOSE40, STRICTX };
+
+    /*
+     * Note, we use to try and dynamically load these dtds.. However, the DTD parser
+     * that we use from http://www.wutka.com/dtdparser.html pukes when parsing STRICT40
+     * and LOOSE40.  So the only DTD we load nos is STRICTX, and we store the dtd locally
+     * instead of going onto the web.  It is loaded in VelocityEditor.    
+     * @see VelocityEditor.getHTMLElement(String)
+     */
+
     /**
      * The id of the Velocity plugin (value
      * <code>"com.googlecode.veloeclipse.vaulttec.ui"</code>).
@@ -61,35 +63,8 @@ public class VelocityPlugin extends AbstractUIPlugin
     private static final String   RESOURCE_NAME   = PLUGIN_ID + ".messages";
     private static final String   CACHE_DIRECTORY = ".veloeclipse";
     private static DTD            dtd             = null;
-    public static String          dirPath;
     private ResourceBundle        fResourceBundle;
 
-//    public VelocityPlugin(IPluginDescriptor aDescriptor)
-//    {
-//        super(aDescriptor);
-//        fPlugin = this;
-//        isBrowserSupported = true;
-//        Browser br = null;
-//        try
-//        {
-//            br = new Browser(getActiveWorkbenchShell(), SWT.BOLD);
-//        }
-//        catch (SWTError e)
-//        {
-//            isBrowserSupported = false;
-//        }
-//        if (br != null) br = null;
-//        try
-//        {
-//            fResourceBundle = ResourceBundle.getBundle(RESOURCE_NAME);
-//        }
-//        catch (Exception e)
-//        {
-//            log(e);
-//            fResourceBundle = null;
-//        }
-//        createCacheDirectory();
-//    }
 
     public boolean isAutoCompletionEnabled()
     {
@@ -128,46 +103,6 @@ public class VelocityPlugin extends AbstractUIPlugin
         {
             log(e);
             fResourceBundle = null;
-        }
-        createCacheDirectory();
-    }
-
-    private void createCacheDirectory()
-    {
-        String dir = System.getProperty("user.home")+ System.getProperty("file.separator")+ CACHE_DIRECTORY;
-       
-        System.out.print(dir);
-        java.io.File file = new java.io.File(dir);
-        dirPath = file.getAbsolutePath();
-        if (!file.exists())
-        {
-            file.mkdir();
-            for (int i = 0; i < dtds.length; i++)
-            {
-                createCachedDTD(dtds[i], dirPath, String.valueOf(i));
-            }
-        }
-    }
-
-    private void createCachedDTD(String url, String path, String name)
-    {
-        DTDParser parser;
-        try
-        {
-            parser = new DTDParser(new URL(url), false);
-            dtd = parser.parse(false);
-            FileOutputStream out = new FileOutputStream(path + "/" + name);
-            ObjectOutputStream s = new ObjectOutputStream(out);
-            s.writeObject(dtd);
-            s.flush();
-        }
-        catch (MalformedURLException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
         }
     }
 

@@ -2,8 +2,10 @@ package com.googlecode.veloeclipse.editor;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -73,8 +75,6 @@ import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-import com.googlecode.veloeclipse.dtd.parser.DTD;
-import com.googlecode.veloeclipse.dtd.parser.DTDElement;
 import com.googlecode.veloeclipse.scanner.XMLElementGuesser;
 import com.googlecode.veloeclipse.ui.editor.xml.VelocityAutoIndentStrategy;
 import com.googlecode.veloeclipse.vaulttec.ui.IPreferencesConstants;
@@ -95,6 +95,9 @@ import com.googlecode.veloeclipse.vaulttec.ui.editor.parser.VelocityMacro;
 import com.googlecode.veloeclipse.vaulttec.ui.editor.text.VelocityTextGuesser;
 import com.googlecode.veloeclipse.vaulttec.ui.model.ITreeNode;
 import com.googlecode.veloeclipse.vaulttec.ui.model.ModelTools;
+import com.wutka.dtd.DTD;
+import com.wutka.dtd.DTDElement;
+import com.wutka.dtd.DTDParser;
 
 
 /**
@@ -344,42 +347,32 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
      */
     public static DTDElement getHTMLElement(String name)
     {
-        // String temp = getDefaultDTD();
-        DTDElement element = null;
-        String defaultdtd = "2";
-        if ((defaultdtd != null) && (Integer.valueOf(defaultdtd).intValue() > 0))
+      
+      if (dtd == null)
+      {
+        String path = VelocityPlugin.getInstallPath() + "xhtml1-strict.dtd";
+        URL url = null;
+        try
         {
-        } else
+          url = new URL(path);
+        } catch (MalformedURLException e2)
         {
-            defaultdtd = "1";
+          e2.printStackTrace();
+          return null;
         }
-        FileInputStream out;
-        if (dtd == null)
+        try
         {
-            try
-            {
-                out = new FileInputStream(VelocityPlugin.dirPath + "/" + defaultdtd);
-                ObjectInputStream s = new ObjectInputStream(out);
-                dtd = (DTD) s.readObject();
-            }
-            catch (FileNotFoundException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            catch (IOException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            catch (ClassNotFoundException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+          DTDParser parser = new DTDParser(url, false);
+          dtd = parser.parse(false);
+        } 
+        catch (IOException e1)
+        {
+          e1.printStackTrace();
+          return null;
         }
-        element = (DTDElement) dtd.elements.get(name);
-        return element;
+      }
+      
+      return (DTDElement) dtd.elements.get(name);
     }
 
     /*

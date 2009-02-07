@@ -33,15 +33,6 @@ import org.eclipse.jface.text.templates.TemplateCompletionProcessor;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.swt.graphics.Image;
 
-import com.googlecode.veloeclipse.dtd.parser.DTDAttribute;
-import com.googlecode.veloeclipse.dtd.parser.DTDChoice;
-import com.googlecode.veloeclipse.dtd.parser.DTDElement;
-import com.googlecode.veloeclipse.dtd.parser.DTDEnumeration;
-import com.googlecode.veloeclipse.dtd.parser.DTDItem;
-import com.googlecode.veloeclipse.dtd.parser.DTDMixed;
-import com.googlecode.veloeclipse.dtd.parser.DTDName;
-import com.googlecode.veloeclipse.dtd.parser.DTDNotationList;
-import com.googlecode.veloeclipse.dtd.parser.DTDSequence;
 import com.googlecode.veloeclipse.editor.completion.ICompletionProvider;
 import com.googlecode.veloeclipse.editor.completion.ProviderManager;
 import com.googlecode.veloeclipse.preferences.GeneralPreferencePage;
@@ -55,6 +46,15 @@ import com.googlecode.veloeclipse.vaulttec.ui.editor.VelocityEditorEnvironment;
 import com.googlecode.veloeclipse.vaulttec.ui.editor.parser.VelocityMacro;
 import com.googlecode.veloeclipse.vaulttec.ui.editor.text.VelocityTextGuesser;
 import com.googlecode.veloeclipse.vaulttec.ui.model.Directive;
+import com.wutka.dtd.DTDAttribute;
+import com.wutka.dtd.DTDChoice;
+import com.wutka.dtd.DTDElement;
+import com.wutka.dtd.DTDEnumeration;
+import com.wutka.dtd.DTDItem;
+import com.wutka.dtd.DTDMixed;
+import com.wutka.dtd.DTDName;
+import com.wutka.dtd.DTDNotationList;
+import com.wutka.dtd.DTDSequence;
 
 
 /**

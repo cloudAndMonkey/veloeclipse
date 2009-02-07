@@ -32,6 +32,11 @@
             name="*">
       </export>
    </library>
+   <library name="dtdparser121.jar">
+      <export
+            name="*">
+      </export>
+   </library>
       
    </runtime>
    <requires>
