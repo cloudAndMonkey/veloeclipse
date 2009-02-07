@@ -57,7 +57,7 @@ public class VelocityPlugin extends AbstractUIPlugin
      * <code>"com.googlecode.veloeclipse.vaulttec.ui"</code>).
      */
     public static final String    PLUGIN_ID       = "com.googlecode.veloeclipse.vaulttec.ui";
-    public static boolean         isBrowserSupported;
+    public static boolean         isBrowserSupported = false;
     /** The shared instance. */
     private static VelocityPlugin fPlugin;
     private static final String   RESOURCE_NAME   = PLUGIN_ID + ".messages";
@@ -84,17 +84,7 @@ public class VelocityPlugin extends AbstractUIPlugin
     public VelocityPlugin()
     {
         fPlugin = this;
-        isBrowserSupported = true;
-        Browser br = null;
-        try
-        {
-            br = new Browser(getActiveWorkbenchShell(), SWT.BOLD);
-        }
-        catch (SWTError e)
-        {
-            isBrowserSupported = false;
-        }
-        if (br != null) br = null;
+      
         try
         {
             fResourceBundle = ResourceBundle.getBundle(RESOURCE_NAME);
@@ -103,6 +93,17 @@ public class VelocityPlugin extends AbstractUIPlugin
         {
             log(e);
             fResourceBundle = null;
+        }
+
+        try
+        {
+            new Browser(getActiveWorkbenchShell(), SWT.BOLD);
+            isBrowserSupported = true;
+        }
+        catch (Exception e)
+        {
+            // If we get here then the Browser won't work for what ever reason
+            // so isBrowserSupported remains false.
         }
     }
 
