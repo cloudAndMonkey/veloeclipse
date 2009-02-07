@@ -1,0 +1,9 @@
+#Change log
+
+== Changes ==
+
+=== 2009-2-17 Release 2.0.7  ===
+
+  * Issue 1 Fixes NullPointerException when using completion because of problems loading DTD
+  * Issue 3 Fixes VelocityPlugin initialization exception when opening a velocity file
+  * Issue 4 Fixes console hyperlinks when file name is not proceeded with a forward slash
