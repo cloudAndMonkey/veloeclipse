@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/com.googlecode.veloeclipse.ui_2.0.6.jar" id="com.googlecode.veloeclipse.ui" version="2.0.6"/>
+   <feature url="features/com.googlecode.veloeclipse.ui_2.0.7.jar" id="com.googlecode.veloeclipse.ui" version="2.0.7"/>
 </site>
