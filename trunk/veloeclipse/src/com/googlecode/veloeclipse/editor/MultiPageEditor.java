@@ -138,7 +138,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
     // Don't create the preview tab if either the user doesn't want it, 
     // or the browser is not supported, which usually means that the Browser
     // through an exception during VelocityPlugin initialization.
-    if (!VelocityPlugin.isBrowserSupported || !VelocityPlugin.getDefault().noShowEditorPreviewTab())
+    if (!VelocityPlugin.isBrowserSupported || VelocityPlugin.getDefault().noShowEditorPreviewTab())
     {
       Composite container = getContainer();
       if (container instanceof CTabFolder)

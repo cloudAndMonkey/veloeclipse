@@ -3,7 +3,7 @@
 <plugin
    id="com.googlecode.veloeclipse.ui"
    name="%pluginName"
-   version="2.0.6"
+   version="2.0.7"
    provider-name="%providerName"
    class="com.googlecode.veloeclipse.vaulttec.ui.VelocityPlugin">
 

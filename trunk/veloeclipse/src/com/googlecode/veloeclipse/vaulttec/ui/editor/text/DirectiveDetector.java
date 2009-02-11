@@ -39,6 +39,10 @@ public class DirectiveDetector implements IWordDetector
      * <li>a connecting punctuation character ("_")
      * </ul>
      * 
+     * We add '@' as little kludge for block macros that have the pattern
+     * #@<chars>  Technically the can only appear after the '#' character, but
+     * this is probably ok.
+     * 
      * @param aChar
      *            the character to be tested.
      * @return true if the character may be part of a Velocity directive; false
@@ -48,6 +52,6 @@ public class DirectiveDetector implements IWordDetector
      */
     public boolean isWordPart(char aChar)
     {
-        return Character.isLetterOrDigit(aChar) || (aChar == '-') || (aChar == '_');
+        return Character.isLetterOrDigit(aChar) || (aChar == '@') || (aChar == '-') || (aChar == '_');
     }
 }
