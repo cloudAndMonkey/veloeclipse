@@ -27,12 +27,12 @@
             name="*">
       </export>
    </library>
-   <library name="velocity-1.6.jar">
+   <library name="dtdparser121.jar">
       <export
             name="*">
       </export>
    </library>
-   <library name="dtdparser121.jar">
+   <library name="velocity.jar">
       <export
             name="*">
       </export>

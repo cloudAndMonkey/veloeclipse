@@ -204,23 +204,4 @@ public class VelocityParser extends RuntimeInstance
 //            error("Exception Loading " + caption + " Directive: " + directiveClass + " : " + e);
         }
     }
-
-    /**
-     * Adds a new Velocimacro. Usually called by Macro only while parsing.
-     * 
-     * @param String
-     *            name Name of velocimacro
-     * @param String
-     *            macro String form of macro body
-     * @param String
-     *            argArray Array of strings, containing the #macro() arguments.
-     *            the 0th is the name.
-     * @return boolean True if added, false if rejected for some reason (either
-     *         parameters or permission settings)
-     */
-    public boolean addVelocimacro(String name, String macro, String[] argArray, String sourceTemplate)
-    {
-        fMacros.put(name, new VelocityMacro(name, argArray, sourceTemplate));
-        return super.addVelocimacro(name, macro, argArray, sourceTemplate);
-    }
 }
