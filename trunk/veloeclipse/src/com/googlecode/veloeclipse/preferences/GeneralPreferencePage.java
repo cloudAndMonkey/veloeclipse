@@ -16,7 +16,7 @@ public class GeneralPreferencePage extends FieldEditorPreferencePage implements 
 
     public static final String P_CASE       = "USE_UPPER_CASE";
     public static final String P_Completion = "AUTO_COMPLETION";
-    public static final String P_PREVIEW = "NO_SHOW_PREVIEW_TAB";
+    //public static final String P_PREVIEW = "NO_SHOW_PREVIEW_TAB";
 
     public GeneralPreferencePage()
     {
@@ -42,7 +42,7 @@ public class GeneralPreferencePage extends FieldEditorPreferencePage implements 
     {
       addField(new BooleanFieldEditor(P_CASE, "use upper case", getFieldEditorParent()));
       addField(new BooleanFieldEditor(P_Completion, "auto closing of braces,brackets etc.", getFieldEditorParent()));
-      addField(new BooleanFieldEditor(P_PREVIEW, "Do not show editor preview tab", getFieldEditorParent()));
+      //addField(new BooleanFieldEditor(P_PREVIEW, "Do not show editor preview tab", getFieldEditorParent()));
     }
 
     /**

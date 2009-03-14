@@ -27,6 +27,5 @@ public interface IPreferencesConstants
     String                     COLOR_RGB_HTML_TAG       = IColorConstants.HTML_TAG;
     String                     COLOR_RGB_HTML_ATTRIBUTE = IColorConstants.HTML_ATTRIBUTE;
     String                     COLOR_SCRIPT             = IColorConstants.SCRIPT;
-    String                     DTD                      = PREFIX + "dtd";
     String                     VELOCITY_RESOURCE_DIR    = PREFIX + "velocity.resourcedir";
 }

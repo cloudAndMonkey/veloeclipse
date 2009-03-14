@@ -87,7 +87,7 @@ public class VelocityTextGuesser
                 {
                     fType = TYPE_END;
                     tagoffset = start - 1;
-                } else if (c1 == '#')
+                } else if (c1 == '#' || c1 == '@')
                 {
                     fType = TYPE_DIRECTIVE;
                 } else if (c1 == '\"')

@@ -23,7 +23,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -33,7 +32,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import com.googlecode.veloeclipse.editor.compare.CompareDialog;
 import com.googlecode.veloeclipse.preferences.GeneralPreferencePage;
 import com.googlecode.veloeclipse.vaulttec.ui.editor.VelocityEditorEnvironment;
-import com.wutka.dtd.DTD;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -47,7 +45,7 @@ public class VelocityPlugin extends AbstractUIPlugin
     /*
      * Note, we use to try and dynamically load these dtds.. However, the DTD parser
      * that we use from http://www.wutka.com/dtdparser.html pukes when parsing STRICT40
-     * and LOOSE40.  So the only DTD we load nos is STRICTX, and we store the dtd locally
+     * and LOOSE40.  So the only DTD we load now is STRICTX, and we store the dtd locally
      * instead of going onto the web.  It is loaded in VelocityEditor.    
      * @see VelocityEditor.getHTMLElement(String)
      */
@@ -57,12 +55,9 @@ public class VelocityPlugin extends AbstractUIPlugin
      * <code>"com.googlecode.veloeclipse.vaulttec.ui"</code>).
      */
     public static final String    PLUGIN_ID       = "com.googlecode.veloeclipse.vaulttec.ui";
-    public static boolean         isBrowserSupported = false;
     /** The shared instance. */
     private static VelocityPlugin fPlugin;
     private static final String   RESOURCE_NAME   = PLUGIN_ID + ".messages";
-    private static final String   CACHE_DIRECTORY = ".veloeclipse";
-    private static DTD            dtd             = null;
     private ResourceBundle        fResourceBundle;
 
 
@@ -75,12 +70,14 @@ public class VelocityPlugin extends AbstractUIPlugin
     {
         return getDefault().getPreferenceStore().getBoolean(GeneralPreferencePage.P_CASE);
     }
-
+   
+    /*
     public boolean noShowEditorPreviewTab()
     {
         return getDefault().getPreferenceStore().getBoolean(GeneralPreferencePage.P_PREVIEW);
     }
-   
+     */
+    
     public VelocityPlugin()
     {
         fPlugin = this;
@@ -93,17 +90,6 @@ public class VelocityPlugin extends AbstractUIPlugin
         {
             log(e);
             fResourceBundle = null;
-        }
-
-        try
-        {
-            new Browser(getActiveWorkbenchShell(), SWT.BOLD);
-            isBrowserSupported = true;
-        }
-        catch (Exception e)
-        {
-            // If we get here then the Browser won't work for what ever reason
-            // so isBrowserSupported remains false.
         }
     }
 

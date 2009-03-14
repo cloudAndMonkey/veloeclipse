@@ -3,7 +3,7 @@
 <plugin
    id="com.googlecode.veloeclipse.ui"
    name="%pluginName"
-   version="2.0.7"
+   version="2.0.8"
    provider-name="%providerName"
    class="com.googlecode.veloeclipse.vaulttec.ui.VelocityPlugin">
 
@@ -61,11 +61,13 @@
             name="%editorName"
             extensions="%fileExtensions"
             icon="icons/full/obj16/vsl_file.gif"
-            class="com.googlecode.veloeclipse.editor.MultiPageEditor"
+            class="com.googlecode.veloeclipse.editor.VelocityEditor"
             contributorClass="com.googlecode.veloeclipse.editor.VelocityEditorActionContributor"
             id="com.googlecode.veloeclipse.editor.Editor">
       </editor>
    </extension>
+
+<!--            class="com.googlecode.veloeclipse.editor.MultiPageEditor" -->
   
    <extension
 	point="org.eclipse.ui.ide.markerResolution">

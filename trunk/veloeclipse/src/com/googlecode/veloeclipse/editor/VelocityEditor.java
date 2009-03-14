@@ -1,10 +1,6 @@
 package com.googlecode.veloeclipse.editor;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -13,11 +9,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.velocity.runtime.directive.VelocimacroProxy;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -58,18 +57,21 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.internal.browser.WorkbenchBrowserSupport;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.ui.texteditor.TextOperationAction;
@@ -91,7 +93,6 @@ import com.googlecode.veloeclipse.vaulttec.ui.editor.actions.IVelocityActionDefi
 import com.googlecode.veloeclipse.vaulttec.ui.editor.actions.JTidyAction;
 import com.googlecode.veloeclipse.vaulttec.ui.editor.actions.ToggleCommentAction;
 import com.googlecode.veloeclipse.vaulttec.ui.editor.outline.VelocityOutlinePage;
-import com.googlecode.veloeclipse.vaulttec.ui.editor.parser.VelocityMacro;
 import com.googlecode.veloeclipse.vaulttec.ui.editor.text.VelocityTextGuesser;
 import com.googlecode.veloeclipse.vaulttec.ui.model.ITreeNode;
 import com.googlecode.veloeclipse.vaulttec.ui.model.ModelTools;
@@ -116,11 +117,8 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
     private static final String         TEMPLATE_PROPOSALS = "template_proposals_action";                        //$NON-NLS-1$
     public static Browser               definitionBrowser;
     private static final String         PREFIX             = "VelocityEditor.";
-    private static final String         STRICT40           = "http://www.w3.org/TR/html4/strict.dtd";
-    private static final String         LOOSE40            = "http://www.w3.org/TR/html4/loose.dtd";
-    private static final String         STRICTX            = "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd";
     private static DTD                  dtd                = null;
-    public static final Map             map                = new HashMap(100);
+    public static final Map<String, String>  map                = new HashMap<String, String>(100);
     static
     {
         map.put("A", getDocLocation() + "wdghtml40/special/a.html");
@@ -289,7 +287,7 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
      */
     private int                         fLastCursorLine;
     VelocityConfiguration               vc                 = null;
-    private MouseClickListener          fMouseListener;
+    public MouseClickListener           fMouseListener;
     private ProjectionSupport           projectionSupport;
     private Set                         set;
 
@@ -301,19 +299,23 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
         VelocityPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
     }
 
-    private void openBrowser(final Display display, final String url)
+    private void openBrowser(String url)
     {
-	
-        Shell shell = new Shell(display, SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
-        shell.setText("Definition Browser");
-        shell.setLayout(new FillLayout());
-        Browser browser = new Browser(shell, SWT.NONE);
-        browser.setUrl(url);
-        shell.open();
+      try
+      {
+        IWebBrowser browser = WorkbenchBrowserSupport.getInstance()
+          .createBrowser(0, "MyBrowserID", "MyBrowserName", "MyBrowser Tooltip");
+        browser.openURL(new URL(url));     
+       }
+      catch (Exception e)
+      {
+        System.out.println(e);
+      }      
     }
 
     private static String getDocLocation()
     {
+      
         String loc = "";
         URL url = VelocityPlugin.getDefault().getBundle().getEntry("/");
         try
@@ -329,21 +331,8 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
     }
 
     /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
-    public String getDefaultDTD()
-    {
-        return getPreferenceStore().getString(IPreferencesConstants.DTD);
-    }
-
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param name
-     *            DOCUMENT ME!
-     * @return DOCUMENT ME!
+     * Currently we only validate against the xhtml strict dtd, this is used by
+     * completion to test what elements are valid in the given context.
      */
     public static DTDElement getHTMLElement(String name)
     {
@@ -516,6 +505,7 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
     protected void editorContextMenuAboutToShow(IMenuManager aMenu)
     {
         super.editorContextMenuAboutToShow(aMenu);
+        addAction(aMenu, IWorkbenchActionConstants.MB_ADDITIONS, IVelocityActionConstants.GOTO_DEFINITION);
         addAction(aMenu, IWorkbenchActionConstants.MB_ADDITIONS, IVelocityActionConstants.CONTENT_ASSIST);
         addAction(aMenu, IWorkbenchActionConstants.MB_ADDITIONS, IVelocityActionConstants.TOGGLE_COMMENT);
         addAction(aMenu, IWorkbenchActionConstants.MB_ADDITIONS, IVelocityActionConstants.FORMAT);
@@ -753,21 +743,22 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
                 // Check if guessed text references an externally defined macro
                 if (guess.getType() == VelocityTextGuesser.TYPE_DIRECTIVE)
                 {
-                    VelocityMacro macro = VelocityEditorEnvironment.getParser().getLibraryMacro(guess.getText());
-                    if (macro != null)
+                    VelocimacroProxy vp = VelocityEditorEnvironment.getParser().getLibraryMacro(guess.getText());
+                    if (vp != null)
                     {
                         String template = ((IFileEditorInput) getEditorInput()).getFile().getName();
-                        if (!macro.getTemplate().equals(template))
+                        if (!vp.getTemplateName().equals(template))
                         {
                             StringBuffer buf = new StringBuffer();
                             buf.append("#macro (");
-                            buf.append(macro.getName());
+                            buf.append(vp.getName());
                             buf.append(") - ");
-                            buf.append(macro.getTemplate());
+                            buf.append(vp.getTemplateName());
                             return buf.toString();
                         }
                     }
-                } else if (guess.getType() == VelocityTextGuesser.TYPE_END)
+                } 
+                else if (guess.getType() == VelocityTextGuesser.TYPE_END)
                 {
                     int i = VelocityAutoIndentStrategy.findStartVeloBefore(guess.getTagOffset(), getDocument());
                     int lnr = -1;
@@ -828,21 +819,9 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
                 switch (xmltype)
                 {
                     case VelocityTextGuesser.TAG_DIRECTIVE:
-                        try
-                        {
-                            guessed = (String) map.get(guessed.toUpperCase());
-                            if (VelocityPlugin.isBrowserSupported)
-                            {
-                                openBrowser(getSite().getShell().getDisplay(), guessed);
-                            }
-                            return;
-                        }
-                        catch (Exception e)
-                        {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        break;
+                      guessed = (String) map.get(guessed.toUpperCase());
+                      openBrowser(guessed);
+                      return;
                     case VelocityTextGuesser.TAG_CLOSE:
                         int i = VelocityAutoIndentStrategy.findMatchingOpenTagBefore(tagOffset, getDocument());
                         if (i > -1)
@@ -851,23 +830,12 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
                         }
                         break;
                     default:
-                        try
-                        {
-                            guessed = (String) map.get(guessed.toUpperCase());
-                            if (VelocityPlugin.isBrowserSupported)
-                            {
-                                openBrowser(getSite().getShell().getDisplay(), guessed);
-                            }
-                            return;
-                        }
-                        catch (Exception e)
-                        {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        break;
+                      guessed = (String) map.get(guessed.toUpperCase());
+                      openBrowser(guessed);
+                      return;
                 }
-            } else
+            } 
+            else
             {
                 VelocityTextGuesser guess = new VelocityTextGuesser(getDocument(), aRegion.getOffset(), true);
                 // Check if guessed text references an externally defined macro
@@ -875,26 +843,33 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
                 {
 
                    
-                    VelocityMacro macro = VelocityEditorEnvironment.getParser().getLibraryMacro(guess.getText());
-                    // TODO we have to be able to open the file if it belongs
-                    // to a project
-                    if (macro != null)
+                    VelocimacroProxy vp = VelocityEditorEnvironment.getParser().getLibraryMacro(guess.getText());
+                    if (vp != null)
                     {
                         String template = ((IFileEditorInput) getEditorInput()).getFile().getName();
-                        if (!macro.getTemplate().equals(template)) {
-//                            try
-//                            {
-//                                Template templatee = VelocityEditorEnvironment.getParser().getTemplate(macro.getTemplate());
-//                                InputStream resourceStream = templatee.getResourceLoader().getResourceStream(macro.getTemplate()) ;  
-//                                
-//                            }
-//                            catch (Exception e)
-//                            {
-//                                // TODO Auto-generated catch block
-//                                e.printStackTrace();
-//                            }
-                            
-                            return; }
+                        if (!vp.getTemplateName().equals(template)) 
+                        {
+                         
+                          try
+                          {
+                            // Goto the macro definition
+                            IPreferenceStore store = VelocityPlugin.getDefault().getPreferenceStore();
+                            String filestr = store.getString(IPreferencesConstants.LIBRARY_PATH) + "/" + vp.getTemplateName();
+                            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filestr)); 
+                            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();                          
+                            ITextEditor teditor = (ITextEditor)IDE.openEditor(page, file);
+                            IDocumentProvider provider = teditor.getDocumentProvider();
+                            IDocument document = provider.getDocument(teditor.getEditorInput());
+                            int start = document.getLineOffset(vp.getLine()-2); 
+                            teditor.selectAndReveal(start + vp.getColumn()-1, 0);                
+                          }
+                          catch(Exception e)
+                          {
+                            e.printStackTrace();
+                          }
+                          
+                          return; 
+                       }
                     }
                     // Look through model tree for guessed text
                     ITreeNode node = fModelTools.getNodeByGuess(guess);
@@ -938,16 +913,7 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
         return fModelTools.getVariables(aLine);
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
-    public List getMacros()
-    {
-        return fModelTools.getMacros();
-    }
-
+    
     /**
      * DOCUMENT ME!
      * 
@@ -1167,13 +1133,13 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
         return 0;
     }
 
-    class MouseClickListener implements KeyListener, MouseListener, MouseMoveListener, FocusListener, PaintListener, IPropertyChangeListener, IDocumentListener, ITextInputListener
+    public class MouseClickListener implements KeyListener, MouseListener, MouseMoveListener, FocusListener, PaintListener, IPropertyChangeListener, IDocumentListener, ITextInputListener
     {
 
         /** The session is active. */
-        private boolean  fActive;
+        public boolean  fActive;
         /** The currently active style range. */
-        private IRegion  fActiveRegion;
+        public IRegion  fActiveRegion;
         /** The currently active style range as position. */
         private Position fRememberedPosition;
         /** The hand cursor. */
@@ -1543,7 +1509,6 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
                 return;
             }
             boolean wasActive = fCursor != null;
-            deactivate();
             if (wasActive)
             {
                 IAction action = getAction("GotoDefinition"); //$NON-NLS-1$
@@ -1554,6 +1519,7 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
                     // getSourceViewer().invalidateTextPresentation();
                 }
             }
+            deactivate();
         }
 
         /*

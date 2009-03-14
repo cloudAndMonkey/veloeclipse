@@ -15,10 +15,14 @@ import org.apache.velocity.runtime.parser.node.Node;
  */
 public class VelocityDirective extends Directive
 {
+    private String fName = "<NOSET>";
+    private int    fType = -1;
 
-    private String fName;
-    private int    fType;
-
+    public VelocityDirective()
+    {
+      
+    }
+    
     public VelocityDirective(String aName, int aType)
     {
         fName = aName;

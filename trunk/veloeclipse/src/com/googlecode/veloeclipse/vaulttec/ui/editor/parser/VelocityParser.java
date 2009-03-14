@@ -4,16 +4,19 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
+
 import org.apache.velocity.runtime.RuntimeInstance;
 import org.apache.velocity.runtime.directive.Directive;
 import org.apache.velocity.runtime.directive.DirectiveConstants;
+import org.apache.velocity.runtime.directive.VelocimacroProxy;
 import org.apache.velocity.runtime.parser.Parser;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.internal.texteditor.quickdiff.compare.equivalence.Hash;
 
 import com.googlecode.veloeclipse.vaulttec.ui.IPreferencesConstants;
 import com.googlecode.veloeclipse.vaulttec.ui.VelocityPlugin;
@@ -37,7 +40,6 @@ public class VelocityParser extends RuntimeInstance
      */
     private Hashtable fDirectives;
     private List      fUserDirectives;
-    private Hashtable fMacros        = new Hashtable();
 
 /* (non-Javadoc)
  * @see org.apache.velocity.runtime.RuntimeInstance#addProperty(java.lang.String, java.lang.Object)
@@ -54,26 +56,26 @@ public class VelocityParser extends RuntimeInstance
     }
 
     /**
-     * DOCUMENT ME!
-     * 
-     * @param aName
-     *            DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
+     * Used by goto definition
      */
-    public VelocityMacro getLibraryMacro(String aName)
+    public VelocimacroProxy getLibraryMacro(String aName)
     { 
-        return (fMacros.containsKey(aName) ? (VelocityMacro) fMacros.get(aName) : null);
+        // blank string is the global namespace
+        return (VelocimacroProxy)getVelocimacro(aName, "");
     }
 
     /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
+     * This is called by completion code to list all possible macro completion
      */
-    public Collection getLibraryMacros()
+    public Collection<VelocimacroProxy> getLibraryMacros()
     {
-        return fMacros.values();
+      ArrayList<VelocimacroProxy> macros = new ArrayList<VelocimacroProxy>(128);
+      // Blank is the global namespace
+      for (VelocimacroProxy vp : getVelocimacros(""))
+      {
+        macros.add(vp);
+      }
+      return macros;
     }
 
     /**
@@ -103,6 +105,7 @@ public class VelocityParser extends RuntimeInstance
             IPreferenceStore store = VelocityPlugin.getDefault().getPreferenceStore();
             setProperty("file.resource.loader.path", store.getString(IPreferencesConstants.LIBRARY_PATH));
             setProperty("velocimacro.library", store.getString(IPreferencesConstants.LIBRARY_LIST));
+            setProperty("parser.pool.size", 1);
             // Initialize system and user directives
             initializeDirectives();
             // Call super implementation last because it calls createNewParser()

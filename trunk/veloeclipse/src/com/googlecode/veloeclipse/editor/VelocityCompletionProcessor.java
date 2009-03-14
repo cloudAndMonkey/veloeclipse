@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.velocity.runtime.directive.Macro;
+import org.apache.velocity.runtime.directive.VelocimacroProxy;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -43,7 +45,6 @@ import com.googlecode.veloeclipse.vaulttec.ui.VelocityPlugin;
 import com.googlecode.veloeclipse.vaulttec.ui.VelocityPluginImages;
 import com.googlecode.veloeclipse.vaulttec.ui.editor.VelocityConfiguration;
 import com.googlecode.veloeclipse.vaulttec.ui.editor.VelocityEditorEnvironment;
-import com.googlecode.veloeclipse.vaulttec.ui.editor.parser.VelocityMacro;
 import com.googlecode.veloeclipse.vaulttec.ui.editor.text.VelocityTextGuesser;
 import com.googlecode.veloeclipse.vaulttec.ui.model.Directive;
 import com.wutka.dtd.DTDAttribute;
@@ -566,35 +567,32 @@ public class VelocityCompletionProcessor extends TemplateCompletionProcessor imp
 	    }
 	}
 	// Add Velocity library macros
-	Iterator macros = VelocityEditorEnvironment.getParser().getLibraryMacros().iterator();
-	while (macros.hasNext()) {
-	    VelocityMacro macro = ((VelocityMacro) macros.next());
-	    String name = macro.getName();
-	    if (name.startsWith(aPrefix)) {
+	for (VelocimacroProxy vp : VelocityEditorEnvironment.getParser().getLibraryMacros()) 
+	{
+	  String name = vp.getName();
+	    if (name.startsWith(aPrefix)) 
+	    {
 		String insert = name + "()";
 		int cursorPos;
 		StringBuffer buffer = new StringBuffer();
 		buffer.append('#');
 		buffer.append(name);
 		buffer.append('(');
-		if (macro.getArguments().length == 1) {
+		if (vp.getNumArgs() == 0) {
 		    cursorPos = insert.length();
 		    buffer.append(')');
 		}
 		else {
 		    cursorPos = insert.length() - 1;
-		    String[] args = macro.getArguments();
-		    for (int i = 1; i < args.length; i++) {
-			buffer.append('$');
-			buffer.append(args[i]);
-			if (i < (args.length - 1)) {
-			    buffer.append(" ");
-			}
+		    for (Macro.MacroArg arg : vp.getMacroArgs())
+		    {
+		      buffer.append('$');
+		      buffer.append(arg.name);
 		    }
 		    buffer.append(')');
 		}
 		buffer.append(" - ");
-		buffer.append(macro.getTemplate());
+		buffer.append(vp.getTemplateName());
 		proposals.add(new CompletionProposal(insert, anOffset, aPrefix.length(), cursorPos, VelocityPluginImages.get(VelocityPluginImages.IMG_OBJ_MACRO),
 			buffer.toString(), null, null));
 	    }

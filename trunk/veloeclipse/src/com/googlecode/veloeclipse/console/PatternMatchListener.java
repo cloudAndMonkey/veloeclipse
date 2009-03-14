@@ -144,7 +144,7 @@ public class PatternMatchListener implements IPatternMatchListener
         IDocumentProvider provider = teditor.getDocumentProvider();
         IDocument document = provider.getDocument(teditor.getEditorInput());
         int start = document.getLineOffset(linenum-1); 
-        teditor.selectAndReveal(start + colnum, 0);                
+        teditor.selectAndReveal(start + colnum -1, 0);                
       } 
       catch (PartInitException e)
       {

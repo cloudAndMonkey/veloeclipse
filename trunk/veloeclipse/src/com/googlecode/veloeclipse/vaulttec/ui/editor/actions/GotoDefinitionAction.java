@@ -29,6 +29,14 @@ public class GotoDefinitionAction extends TextEditorAction
     public void run()
     {
         VelocityEditor editor = (VelocityEditor) getTextEditor();
+        if (editor.fMouseListener.fActiveRegion != null)
+        {
+            // If the user is using the ctrl-alt mouse click feature, then
+            // goto the definition under the mouse, and not under the current cursor location
+            editor.gotoDefinition(editor.fMouseListener.fActiveRegion);
+            return;
+        }
+        
         ITextSelection selection = (ITextSelection) editor.getSelectionProvider().getSelection();
         if (!selection.isEmpty())
         {
