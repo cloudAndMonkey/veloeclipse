@@ -1,5 +1,15 @@
 == Changes ==
 
+=== 2009-03-14 Release 2.0.8  ===
+
+  * Added Goto definition to cursor menu
+  * Goto definition for html tags works according to user settings for either internal or external
+     Browser support.
+  * Goto definition works for macros defined in the macro libraries specified in the Veloeclipse Library
+     Preferences page. Note - As it stands, new macro definitions require an Eclipse restart to take affect.
+  * Macro completions takes into account the macro libraries with same provisions as above. 
+  * Issue 10 Fixes exceptions when using new file associations.
+
 === 2009-02-06 Release 2.0.7  ===
 
   * Issue 1 Fixes NullPointerException when using completion because of problems loading DTD
