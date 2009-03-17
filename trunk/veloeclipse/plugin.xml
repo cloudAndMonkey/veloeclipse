@@ -62,12 +62,10 @@
             extensions="%fileExtensions"
             icon="icons/full/obj16/vsl_file.gif"
             class="com.googlecode.veloeclipse.editor.VelocityEditor"
-            contributorClass="com.googlecode.veloeclipse.editor.VelocityEditorActionContributor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             id="com.googlecode.veloeclipse.editor.Editor">
       </editor>
    </extension>
-
-<!--            class="com.googlecode.veloeclipse.editor.MultiPageEditor" -->
   
    <extension
 	point="org.eclipse.ui.ide.markerResolution">

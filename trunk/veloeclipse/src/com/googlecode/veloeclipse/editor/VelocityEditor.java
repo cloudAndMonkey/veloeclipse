@@ -60,6 +60,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -70,6 +72,8 @@ import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.internal.browser.WorkbenchBrowserSupport;
+import org.eclipse.ui.part.EditorActionBarContributor;
+import org.eclipse.ui.texteditor.BasicTextEditorActionContributor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
@@ -290,7 +294,7 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
     public MouseClickListener           fMouseListener;
     private ProjectionSupport           projectionSupport;
     private Set                         set;
-
+      
     public VelocityEditor()
     {
         fModelTools = new ModelTools(this);
@@ -298,7 +302,7 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
         cp = VelocityEditorEnvironment.getColorProvider();
         VelocityPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
     }
-
+    
     private void openBrowser(String url)
     {
       try
@@ -984,7 +988,8 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
         {
         }
     }
-
+    
+    
     /**
      * Determines if the specified character may be part of a Velocity
      * reference. A character may be part of a Velocity directive if and only if
@@ -1006,25 +1011,7 @@ public class VelocityEditor extends TextEditor implements IPropertyChangeListene
     {
         return Character.isLetterOrDigit(aChar) || (aChar == '-') || (aChar == '_');
     }
-
-    /**
-     * Returns the desktop's StatusLineManager.
-     */
-    protected IStatusLineManager getStatusLineManager()
-    {
-	return getEditorSite().getActionBars().getStatusLineManager();
-//        IStatusLineManager manager;
-//        IEditorActionBarContributor contributor = getEditorSite().getActionBarContributor();
-//        if ((contributor != null) && contributor instanceof EditorActionBarContributor)
-//        {
-//            manager = ((EditorActionBarContributor) contributor).getActionBars().getStatusLineManager();
-//        } else
-//        {
-//            manager = null;
-//        }
-//        return manager;
-    }
-
+        
     /**
      * Displays an error message in editor's status line.
      */
