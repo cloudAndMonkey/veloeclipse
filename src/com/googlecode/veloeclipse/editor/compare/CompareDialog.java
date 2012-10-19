@@ -7,6 +7,7 @@
 package com.googlecode.veloeclipse.editor.compare;
 
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.internal.ICompareContextIds;
 import org.eclipse.compare.internal.ResizableDialog;
@@ -17,7 +18,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;

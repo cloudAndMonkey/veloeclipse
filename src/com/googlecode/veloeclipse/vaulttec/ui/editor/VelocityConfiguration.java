@@ -36,7 +36,6 @@ import com.googlecode.veloeclipse.ui.editor.xml.VelocityAutoIndentStrategy;
 import com.googlecode.veloeclipse.ui.editor.xml.WholePartitionDamagerRepairer;
 import com.googlecode.veloeclipse.vaulttec.ui.IColorConstants;
 import com.googlecode.veloeclipse.vaulttec.ui.VelocityColorProvider;
-import com.sun.org.apache.xerces.internal.impl.XMLScanner;
 
 
 /**
@@ -51,7 +50,9 @@ public class VelocityConfiguration extends SourceViewerConfiguration implements 
     public static final String[]       PREFORMATTED_PARTITIONS = { IEditorConfiguration.SCRIPT_PARTITION, IEditorConfiguration.CDATA_PARTITION, IEditorConfiguration.PROC_INST_PARTITION, IEditorConfiguration.MULTI_LINE_COMMENT};
     // public static final String[] ESCAPED_PARTITIONS = { "__script_partition",
     // "__cdata_partition", "__proc_inst_partition", "__comment_partition" };
-    public static final String[]       ESCAPED_PARTITIONS      = { IEditorConfiguration.CDATA_PARTITION, IEditorConfiguration.PROC_INST_PARTITION, IEditorConfiguration.MULTI_LINE_COMMENT,IEditorConfiguration.COMMENT_PARTITION}; // look
+    public static final String[]       ESCAPED_PARTITIONS      = 
+      { IEditorConfiguration.CDATA_PARTITION, IEditorConfiguration.PROC_INST_PARTITION, IEditorConfiguration.MULTI_LINE_COMMENT,IEditorConfiguration.COMMENT_PARTITION}; 
+    // look
                                                                                                                                             // at
                                                                                                                                             // the
                                                                                                                                             // commented

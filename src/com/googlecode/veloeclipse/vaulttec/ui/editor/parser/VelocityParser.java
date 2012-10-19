@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +15,6 @@ import org.apache.velocity.runtime.directive.DirectiveConstants;
 import org.apache.velocity.runtime.directive.VelocimacroProxy;
 import org.apache.velocity.runtime.parser.Parser;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.internal.texteditor.quickdiff.compare.equivalence.Hash;
 
 import com.googlecode.veloeclipse.vaulttec.ui.IPreferencesConstants;
 import com.googlecode.veloeclipse.vaulttec.ui.VelocityPlugin;
