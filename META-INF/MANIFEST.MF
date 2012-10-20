@@ -32,3 +32,10 @@ Import-Package: org.eclipse.compare,
  org.eclipse.ui.texteditor,
  org.eclipse.ui.texteditor.templates,
  org.eclipse.ui.views.contentoutline
+Bundle-ClassPath: commons-collections-3.2.1.jar,
+ dtdparser121.jar,
+ htmlparser-1.5.jar,
+ jtidy-r8-SNAPSHOT.jar,
+ velocity.jar,
+ velocityui.jar,
+ commons-lang-2.4.jar

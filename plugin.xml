@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-
  <extension-point id="completionproviders" name="Completion Providers" schema="schema/completionproviders.exsd"/>
  <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="%editorName"
-            extensions="%fileExtensions"
+            name="Veloeclipse"
+            extensions="vm"
             icon="icons/full/obj16/vsl_file.gif"
             class="com.googlecode.veloeclipse.editor.VelocityEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
